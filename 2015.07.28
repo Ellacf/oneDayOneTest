@@ -1,0 +1,19 @@
+题目1：
+var foo = {
+	bar: function(){
+		console.log(this);
+	}
+};
+foo.bar();				
+(foo.bar)();			
+(foo.bar = foo.bar)();	
+
+上述题目的测试结果是什么呢？实测，如下所示：
+foo.bar();				//foo
+(foo.bar)();			//foo
+(foo.bar = foo.bar)();	//window
+
+那么，问题来了，在这个题目中，()的作用是什么？this是如何改变的？
+
+
+解答：
