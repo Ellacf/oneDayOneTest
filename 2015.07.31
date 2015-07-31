@@ -1,0 +1,11 @@
+//每日一题
+//用 o(n) 找出给定数组中的第一个unique元素
+//例如
+
+var ary = [1,2,1,4,3,2,5,6,7,3,4,6]
+
+function firstUnique(ary){
+	//TODO
+}
+var fst = firstUnique(ary);
+console.log(fst); //输出5
