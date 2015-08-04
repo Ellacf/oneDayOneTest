@@ -1,2 +1,99 @@
-题目1：如何解决iframe高度自适应？列举解决方案
-题是2：跨域如何解决？列举解决方案。
+题是1：跨域如何解决？列举解决方案。
+
+解答如下：
+一、CORS（Cross-Origin Resource Sharing）跨域资源共享技术
+客户端设置：【IE使用XDomainRequest创建跨域请求，其他浏览器通过XMLHttpRequest创建跨域请求。】如下为跨浏览器创建请求代码：
+//创建跨浏览器CORS跨域请求
+function createCORSRequest(method, url){
+	var xhr = new XMLHttpRequest();
+	if ("withCredentails" in xhr){
+		// 此时即支持CORS的情况  
+    	// 检查XMLHttpRequest对象是否有“withCredentials”属性  
+   		// “withCredentials”仅存在于XMLHTTPRequest2对象里 
+		xhr.open(method, url, true);
+	}else if(typeof XDomainRequest != "undefined"){
+		// 否则检查是否支持XDomainRequest，IE8和IE9支持  
+    	// XDomainRequest仅存在于IE中，是IE用于支持CORS请求的方式
+		xhr = new XDomainRequest();
+		xhr.open(method, url);
+
+	}else {
+		// 否则，浏览器不支持CORS  	
+		xhr = null;
+	}
+	return xhr;
+};
+
+var xhr = createCORSRequest("get", "http://localhost:3051/getData");
+if (!xhr) {  
+  throw new Error('CORS not supported');  
+}
+
+服务器端设置跨域访问，设置如下即可：
+	res.header("Access-Control-Allow-Origin", "*"); 	//设置跨域访问
+	
+类似的，通过Ajax实现的前后台完整代码如下：	
+<!DOCTYPE html>
+<html>
+<head>
+	
+</head>
+<body>
+	<script src='http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js'></script>
+	<script type="text/javascript">
+	 $.ajax({
+        type: "get",
+        async: false,
+        url: "http://localhost:3051/getData",
+        dataType: "json",
+        success: function (data) {
+            alert(data.name + " " + data.company);
+        },
+        error: function () {
+            alert('error');
+        }
+    });
+
+	</script>
+</body>
+</html>
+基于Node.js实现的后台代码如下：
+var http = require('http');  
+var express = require('express');
+  
+var port = 3051;  
+var data = {'name': 'maimai', 'company': 'meituan'};  
+
+var app = express();
+app.get('/getData', function(req, res) {
+	res.header("Access-Control-Allow-Origin", "*"); 	//设置跨域访问
+
+    // res.header("Access-Control-Allow-Origin", "http://localhost:8080,null");		//错误
+    // res.header("Access-Control-Allow-Origin", ["http://localhost:8080",null]); 	//错误
+
+	var accessOriginArray = new Array(10);
+	accessOriginArray = ["http://localhost:8080","http://localhost:9090"];
+
+	var origin = req.headers.origin;
+
+	if (accessOriginArray.indexOf(origin) != -1){
+		// console.log(accessOriginArray.indexOf(origin));
+		// console.log(origin);
+		// console.log(res.getHeader("Access-Control-Allow-Origin"));
+		res.header("Access-Control-Allow-Origin", origin);
+	}else{
+		res.header("Access-Control-Allow-Origin", null);
+	}
+    res.send(JSON.stringify(data));
+
+});
+
+app.listen(3051);
+console.log('Listening on port 3051...');
+
+二、其他跨域解决方案：
+图像Ping 、JSONP 、Comet、SSE、WebSockets
+
+
+
+题目2：如何解决iframe高度自适应？列举解决方案
