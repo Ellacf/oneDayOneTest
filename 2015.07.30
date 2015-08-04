@@ -1,4 +1,5 @@
 题是1：跨域如何解决？列举解决方案。
+CORS 、 图像Ping 、JSONP 、
 
 解答如下：
 一、CORS（Cross-Origin Resource Sharing）跨域资源共享技术
